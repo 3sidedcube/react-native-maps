@@ -14,15 +14,15 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.maps.android.data.kml.KmlLayer;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -51,13 +51,28 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
       "none", GoogleMap.MAP_TYPE_NONE
   );
 
+  private final Map<String, Integer> MY_LOCATION_PRIORITY = MapBuilder.of(
+          "balanced", LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,
+          "high", LocationRequest.PRIORITY_HIGH_ACCURACY,
+          "low", LocationRequest.PRIORITY_LOW_POWER,
+          "passive", LocationRequest.PRIORITY_NO_POWER
+  );
+
   private final ReactApplicationContext appContext;
+  private AirMapMarkerManager markerManager;
 
   protected GoogleMapOptions googleMapOptions;
 
   public AirMapManager(ReactApplicationContext context) {
     this.appContext = context;
     this.googleMapOptions = new GoogleMapOptions();
+  }
+
+  public AirMapMarkerManager getMarkerManager() {
+    return this.markerManager;
+  }
+  public void setMarkerManager(AirMapMarkerManager markerManager) {
+    this.markerManager = markerManager;
   }
 
   @Override
@@ -143,6 +158,21 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
   @ReactProp(name = "showsUserLocation", defaultBoolean = false)
   public void setShowsUserLocation(AirMapView view, boolean showUserLocation) {
     view.setShowsUserLocation(showUserLocation);
+  }
+
+  @ReactProp(name = "userLocationPriority")
+  public void setUserLocationPriority(AirMapView view, @Nullable String accuracy) {
+    view.setUserLocationPriority(MY_LOCATION_PRIORITY.get(accuracy));
+  }
+
+  @ReactProp(name = "userLocationUpdateInterval", defaultInt = 5000)
+  public void setUserLocationUpdateInterval(AirMapView view, int updateInterval) {
+    view.setUserLocationUpdateInterval(updateInterval);
+  }
+
+  @ReactProp(name = "userLocationFastestInterval", defaultInt = 5000)
+  public void setUserLocationFastestInterval(AirMapView view, int fastestInterval) {
+    view.setUserLocationFastestInterval(fastestInterval);
   }
 
   @ReactProp(name = "showsMyLocationButton", defaultBoolean = true)
@@ -370,7 +400,9 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
 
     map.putAll(MapBuilder.of(
         "onIndoorLevelActivated", MapBuilder.of("registrationName", "onIndoorLevelActivated"),
-        "onIndoorBuildingFocused", MapBuilder.of("registrationName", "onIndoorBuildingFocused")
+        "onIndoorBuildingFocused", MapBuilder.of("registrationName", "onIndoorBuildingFocused"),
+        "onDoublePress", MapBuilder.of("registrationName", "onDoublePress"),
+        "onMapLoaded", MapBuilder.of("registrationName", "onMapLoaded")
     ));
 
     return map;

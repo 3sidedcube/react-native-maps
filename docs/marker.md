@@ -7,6 +7,7 @@
 | `title` | `String` |  | The title of the marker. This is only used if the <Marker /> component has no children that are a `<Callout />`, in which case the default callout behavior will be used, which will show both the `title` and the `description`, if provided.
 | `description` | `String` |  | The description of the marker. This is only used if the <Marker /> component has no children that are a `<Callout />`, in which case the default callout behavior will be used, which will show both the `title` and the `description`, if provided.
 | `image` | `ImageSource` |  | A custom image to be used as the marker's icon. Only local image resources are allowed to be used.
+| `icon` | `ImageSource` |  | Marker icon to render (equivalent to `icon` property of GMSMarker Class).
 | `pinColor` | `Color` |  | If no custom marker view or custom image is provided, the platform default pin will be used, which can be customized by this color. Ignored if a custom marker is being used.<br/><br/> For Android, the set of available colors is limited. Unsupported colors will fall back to red. See [#887](https://github.com/react-community/react-native-maps/issues/887) for more information.
 | `coordinate` | `LatLng` |  | The coordinate for the marker.
 | `centerOffset` | `Point` | (0, 0) | The offset (in points) at which to display the view.<br/><br/> By default, the center point of an annotation view is placed at the coordinate point of the associated annotation. You can use this property to reposition the annotation view as needed. This x and y offset values are measured in points. Positive offset values move the annotation view down and to the right, while negative values move it up and to the left.<br/><br/> For Google Maps, see the `anchor` prop.
@@ -21,6 +22,7 @@
 | `tracksInfoWindowChanges` | `Boolean` | false | Sets whether this marker should track view changes in info window. Enabling it will let marker change content of info window after first render pass, but will lead to decreased performance, so it's recommended to disable it whenever you don't need it. **Note**: iOS Google Maps only.
 | `stopPropagation` | `Boolean` | false | Sets whether this marker should propagate `onPress` events. Enabling it will stop the parent `MapView`'s `onPress` from being called. **Note**: iOS only. Android does not propagate `onPress` events. See [#1132](https://github.com/react-community/react-native-maps/issues/1132) for more information.
 | `opacity` | `Float` | 1.0 | The marker's opacity between 0.0 and 1.0.
+| `isPreselected` | `Boolean` | false | When true, the marker will be pre-selected. Setting this to true allows the user to drag the marker without needing to tap on it once to focus on it. **Note**: iOS Apple Maps only.
 
 ## Events
 
@@ -43,6 +45,7 @@ To access event data, you will need to use `e.nativeEvent`. For example, `onPres
 |---|---|---|
 | `showCallout` |  | Shows the callout for this marker
 | `hideCallout` |  | Hides the callout for this marker
+| `redrawCallout` |  | Causes a redraw of the marker's callout. Useful for Google Maps on iOS. **Note**: iOS only.
 | `animateMarkerToCoordinate` | `coordinate: LatLng, duration: number` | Animates marker movement. **Note**: Android only
 | `redraw` |  | Causes a redraw of the marker. Useful when there are updates to the marker and `tracksViewChanges` comes with a cost that is too high.
 
@@ -62,4 +65,17 @@ type Point {
   x: Number,
   y: Number,
 }
+```
+
+## Children Components
+
+Children components can be added within a Marker and rendered content will replace the marker symbol.  This is a way of creating custom markers and allowing use of native SVGs.
+
+Example:
+```
+<Marker ...>
+ <View style={{backgroundColor: "red", padding: 10}}>
+   <Text>SF</Text>
+ </View>
+</Marker>
 ```

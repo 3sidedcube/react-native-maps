@@ -38,6 +38,10 @@ versions you should add `react` as a dependency in your `package.json`.
 
 [`<Overlay />` Component API](docs/overlay.md)
 
+[`<Heatmap />` Component API](docs/heatmap.md)
+
+[`<Geojson />` Component API](docs/geojson.md)
+
 ## General Usage
 
 ```js
@@ -167,16 +171,21 @@ import { UrlTile } from 'react-native-maps';
   onRegionChange={this.onRegionChange}
 >
   <UrlTile
-   /**
-   * The url template of the tile server. The patterns {x} {y} {z} will be replaced at runtime
-   * For example, http://c.tile.openstreetmap.org/{z}/{x}/{y}.png
-   */
+    /**
+     * The url template of the tile server. The patterns {x} {y} {z} will be replaced at runtime
+     * For example, http://c.tile.openstreetmap.org/{z}/{x}/{y}.png
+     */
     urlTemplate={this.state.urlTemplate}
     /**
      * The maximum zoom level for this tile overlay. Corresponds to the maximumZ setting in
      * MKTileOverlay. iOS only.
      */
     maximumZ={19}
+    /**
+     * flipY allows tiles with inverted y coordinates (origin at bottom left of map)
+     * to be used. Its default value is false.
+     */
+    flipY={false}
   />
 </MapView>
 ```
@@ -271,7 +280,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 
 Then add the AirGoogleMaps directory:
 
-https://github.com/airbnb/react-native-maps/blob/1e71a21f39e7b88554852951f773c731c94680c9/docs/installation.md#ios
+https://github.com/react-native-community/react-native-maps/blob/1e71a21f39e7b88554852951f773c731c94680c9/docs/installation.md#ios
 
 An unofficial step-by-step guide is also available at https://gist.github.com/heron2014/e60fa003e9b117ce80d56bb1d5bfe9e0
 
@@ -389,6 +398,9 @@ the `<Marker />`'s `title` and `description` props.
 
 Custom callout views can be the entire tooltip bubble, or just the content inside of the system
 default bubble.
+
+To handle press on specific subview of callout use `<CalloutSubview />` with `onPress`.
+See `Callouts.js` example.
 
 ![](http://i.giphy.com/xT77XNePGnMIIDpbnq.gif) ![](http://i.giphy.com/xT77YdU0HXryvoRqaQ.gif)
 
@@ -600,8 +612,8 @@ Pass an array of coordinates to focus a map region on said coordinates.
 
 * Make sure that you have [properly installed](docs/installation.md) react-native-maps.
 * Check in the logs if there is more informations about the issue.
-* Try setting the style of the MapView to an absolute position with top, left, right and bottom values set.
-* Make sure you have enabled Google Maps API in ![Google developer console](https://console.developers.google.com/apis/library)
+* Try setting the style of the MapView to an absolute position with top, left, right and bottom  values set.
+*   Make sure you have enabled Google Maps API in [Google developer console](https://console.developers.google.com/apis/library)
 
 ```javascript
 const styles = StyleSheet.create({
